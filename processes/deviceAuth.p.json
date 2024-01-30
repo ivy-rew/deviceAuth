@@ -1,0 +1,179 @@
+{
+  "$schema" : "https://json-schema.axonivy.com/process/11.2.2/process.json",
+  "id" : "18D5A663D7B1130C",
+  "config" : {
+    "data" : "device.auth.Data"
+  },
+  "elements" : [ {
+      "id" : "f0",
+      "type" : "RequestStart",
+      "name" : "start",
+      "config" : {
+        "signature" : "start"
+      },
+      "visual" : {
+        "at" : { "x" : 120, "y" : 200 }
+      },
+      "connect" : [
+        { "id" : "f2", "to" : "f3" }
+      ]
+    }, {
+      "id" : "f1",
+      "type" : "TaskEnd",
+      "visual" : {
+        "at" : { "x" : 992, "y" : 200 }
+      }
+    }, {
+      "id" : "f3",
+      "type" : "RestClientCall",
+      "name" : "init",
+      "config" : {
+        "method" : "POST",
+        "target" : {
+          "clientId" : "f87198c1-98b9-4642-8b99-075889ed9f0a",
+          "path" : "/devicecode"
+        },
+        "body" : {
+          "type" : "FORM",
+          "form" : {
+            "client_id" : [ "ivy.var.msauth_clientId" ],
+            "scope" : [ "ivy.var.msauth_scope" ]
+          }
+        },
+        "response" : {
+          "entity" : {
+            "type" : "com.fasterxml.jackson.databind.JsonNode",
+            "map" : {
+              "out.deviceInit" : "result"
+            }
+          }
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 240, "y" : 200 }
+      },
+      "connect" : [
+        { "id" : "f5", "to" : "f13" }
+      ]
+    }, {
+      "id" : "f6",
+      "type" : "RestClientCall",
+      "name" : "token",
+      "config" : {
+        "method" : "POST",
+        "target" : {
+          "clientId" : "f87198c1-98b9-4642-8b99-075889ed9f0a",
+          "path" : "/token"
+        },
+        "body" : {
+          "type" : "FORM",
+          "form" : {
+            "client_id" : [ "ivy.var.msauth_clientId" ],
+            "grant_type" : [ "\"urn:ietf:params:oauth:grant-type:device_code\"" ],
+            "device_code" : [ "in.deviceInit.get(\"device_code\").asText()" ]
+          }
+        },
+        "response" : {
+          "entity" : {
+            "type" : "com.fasterxml.jackson.databind.JsonNode",
+            "map" : {
+              "out.token" : "result"
+            }
+          }
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 560, "y" : 280 }
+      },
+      "boundaries" : [ {
+          "id" : "f9",
+          "type" : "ErrorBoundaryEvent",
+          "config" : {
+            "output" : {
+              "code" : "ch.ivyteam.ivy.bpm.error.BpmErrorHandler.resetLoopDetection();"
+            }
+          },
+          "visual" : {
+            "at" : { "x" : 592, "y" : 322 }
+          },
+          "connect" : [
+            { "id" : "f4", "to" : "f13", "via" : [ { "x" : 392, "y" : 352 } ] }
+          ]
+        } ],
+      "connect" : [
+        { "id" : "f8", "to" : "f15" }
+      ]
+    }, {
+      "id" : "f13",
+      "type" : "DialogCall",
+      "name" : "lead to ms",
+      "config" : {
+        "dialog" : "device.auth.deviceAuthInit:start(com.fasterxml.jackson.databind.JsonNode)",
+        "call" : {
+          "map" : {
+            "param.deviceInit" : "in.deviceInit"
+          }
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 392, "y" : 200 }
+      },
+      "connect" : [
+        { "id" : "f14", "to" : "f6" }
+      ]
+    }, {
+      "id" : "f15",
+      "type" : "RestClientCall",
+      "name" : "whoami",
+      "config" : {
+        "target" : {
+          "clientId" : "1b7ee2f3-c2d1-4a8f-8d62-4a8773160945",
+          "path" : "/me",
+          "headers" : {
+            "Authorization" : "\"Bearer \"+in.token.get(\"access_token\").asText()"
+          }
+        },
+        "response" : {
+          "entity" : {
+            "type" : "com.fasterxml.jackson.databind.JsonNode",
+            "map" : {
+              "out.user" : "result"
+            },
+            "code" : "ivy.log.info(result.toPrettyString());"
+          }
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 720, "y" : 200 }
+      },
+      "connect" : [
+        { "id" : "f16", "to" : "f7" }
+      ]
+    }, {
+      "id" : "f7",
+      "type" : "DialogCall",
+      "name" : "success",
+      "config" : {
+        "dialog" : "device.auth.authSuccess:start(com.fasterxml.jackson.databind.JsonNode)",
+        "call" : {
+          "map" : {
+            "param.user" : "in.user"
+          }
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 880, "y" : 200 }
+      },
+      "connect" : [
+        { "id" : "f10", "to" : "f1" }
+      ]
+    }, {
+      "id" : "f11",
+      "type" : "ProcessAnnotation",
+      "name" : "Simulates a client, such as a mobile app, that leases an access token to access engine endpoints",
+      "visual" : {
+        "at" : { "x" : 384, "y" : 80 },
+        "size" : { "width" : 540, "height" : 44 }
+      }
+    } ]
+}

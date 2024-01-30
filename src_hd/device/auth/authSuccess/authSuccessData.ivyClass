@@ -1,0 +1,6 @@
+authSuccessData #class
+device.auth.authSuccess #namespace
+user com.fasterxml.jackson.databind.JsonNode #field
+user PERSISTENT #fieldModifier
+name String #field
+name PERSISTENT #fieldModifier

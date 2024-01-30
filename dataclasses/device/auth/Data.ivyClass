@@ -1,0 +1,5 @@
+Data #class
+device.auth #namespace
+deviceInit com.fasterxml.jackson.databind.JsonNode #field
+token com.fasterxml.jackson.databind.JsonNode #field
+user com.fasterxml.jackson.databind.JsonNode #field

@@ -1,0 +1,10 @@
+# == Variables ==
+# 
+# You can define here your project Variables.
+#
+Variables:
+  msauth:
+    tenant:
+    # [password]
+    clientId:
+    scope: user.read openid profile

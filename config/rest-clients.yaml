@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://json-schema.axonivy.com/app/0.0.1/rest-clients.json
+RestClients:
+  msgraph:
+    UUID: 1b7ee2f3-c2d1-4a8f-8d62-4a8773160945
+    Url: https://graph.microsoft.com/v1.0/
+    Features:
+    - ch.ivyteam.ivy.rest.client.mapper.JsonFeature
+  mslogin:
+    UUID: f87198c1-98b9-4642-8b99-075889ed9f0a
+    Url: https://login.microsoftonline.com/{tenant}/oauth2/v2.0/
+    Features:
+    - ch.ivyteam.ivy.rest.client.mapper.JsonFeature
+    Properties:
+      PATH.tenant: ${ivy.var.msauth.tenant}

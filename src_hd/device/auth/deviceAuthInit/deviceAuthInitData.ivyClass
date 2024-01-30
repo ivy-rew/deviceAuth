@@ -1,0 +1,8 @@
+deviceAuthInitData #class
+device.auth.deviceAuthInit #namespace
+deviceInit com.fasterxml.jackson.databind.JsonNode #field
+deviceInit PERSISTENT #fieldModifier
+message String #field
+message PERSISTENT #fieldModifier
+userCode String #field
+userCode PERSISTENT #fieldModifier
