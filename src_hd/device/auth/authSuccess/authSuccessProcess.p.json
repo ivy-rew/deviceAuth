@@ -16,9 +16,19 @@
             { "name" : "user", "type" : "com.fasterxml.jackson.databind.JsonNode", "desc" : "" }
           ],
           "map" : {
-            "out.name" : "param.user.get(\"displayName\").asText()",
             "out.user" : "param.user"
-          }
+          },
+          "code" : [
+            "import com.fasterxml.jackson.databind.JsonNode;",
+            "JsonNode display = param.user.get(\"displayName\");",
+            "if (display != null) {",
+            "  out.name = display.asText();",
+            "}",
+            "JsonNode user = param.user.get(\"name\");",
+            "if (user != null) {",
+            "  out.name = user.asText();",
+            "}"
+          ]
         },
         "guid" : "18D5A96FEDCCC14A"
       },

@@ -12,3 +12,8 @@ RestClients:
     - ch.ivyteam.ivy.rest.client.mapper.JsonFeature
     Properties:
       PATH.tenant: ${ivy.var.msauth.tenant}
+  ivyBackend:
+    UUID: 9e45edb4-b90d-4321-a8c1-6a7bcfef49a2
+    Url: http://{ivy.engine.host}:{ivy.engine.http.port}/api/
+    Features:
+    - ch.ivyteam.ivy.rest.client.mapper.JsonFeature

@@ -101,7 +101,7 @@
           ]
         } ],
       "connect" : [
-        { "id" : "f8", "to" : "f15" }
+        { "id" : "f8", "to" : "f12" }
       ]
     }, {
       "id" : "f13",
@@ -124,7 +124,7 @@
     }, {
       "id" : "f15",
       "type" : "RestClientCall",
-      "name" : "whoami",
+      "name" : "graph/whoami",
       "config" : {
         "target" : {
           "clientId" : "1b7ee2f3-c2d1-4a8f-8d62-4a8773160945",
@@ -175,5 +175,56 @@
         "at" : { "x" : 384, "y" : 80 },
         "size" : { "width" : 540, "height" : 44 }
       }
+    }, {
+      "id" : "f12",
+      "type" : "RestClientCall",
+      "name" : "engine/whoami",
+      "config" : {
+        "target" : {
+          "clientId" : "9e45edb4-b90d-4321-a8c1-6a7bcfef49a2",
+          "path" : "/security/me",
+          "headers" : {
+            "Authorization" : "\"Bearer \"+in.token.get(\"access_token\").asText(\"\")"
+          }
+        },
+        "response" : {
+          "entity" : {
+            "type" : "com.fasterxml.jackson.databind.JsonNode",
+            "map" : {
+              "out.user" : "result"
+            }
+          }
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 720, "y" : 280 }
+      },
+      "connect" : [
+        { "id" : "f17", "to" : "f7" }
+      ]
+    }, {
+      "id" : "f18",
+      "type" : "RequestStart",
+      "name" : "dev",
+      "config" : {
+        "signature" : "dev",
+        "input" : {
+          "params" : [
+            { "name" : "jwt", "type" : "String", "desc" : "" }
+          ],
+          "map" : { },
+          "code" : [
+            "com.fasterxml.jackson.databind.node.ObjectNode obj = com.fasterxml.jackson.databind.node.JsonNodeFactory.instance.objectNode();",
+            "obj.put(\"access_token\", param.jwt);",
+            "out.token = obj;"
+          ]
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 672, "y" : 376 }
+      },
+      "connect" : [
+        { "id" : "f19", "to" : "f12" }
+      ]
     } ]
 }
