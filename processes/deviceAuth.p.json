@@ -182,7 +182,7 @@
       "config" : {
         "target" : {
           "clientId" : "9e45edb4-b90d-4321-a8c1-6a7bcfef49a2",
-          "path" : "/security/me",
+          "path" : "/me",
           "headers" : {
             "Authorization" : "\"Bearer \"+in.token.get(\"access_token\").asText(\"\")"
           }
