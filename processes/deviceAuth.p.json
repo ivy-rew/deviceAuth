@@ -71,7 +71,8 @@
           "form" : {
             "client_id" : [ "ivy.var.msauth_clientId" ],
             "grant_type" : [ "\"urn:ietf:params:oauth:grant-type:device_code\"" ],
-            "device_code" : [ "in.deviceInit.get(\"device_code\").asText()" ]
+            "device_code" : [ "in.deviceInit.get(\"device_code\").asText()" ],
+            "scope" : [ "ivy.var.msauth_scope" ]
           }
         },
         "response" : {
@@ -283,6 +284,7 @@
             "String tokenJson = ivy.session.getSessionUser().getProperty(\"graph.token\");",
             "if (!tokenJson.isEmpty()) {",
             "  in.token = new com.fasterxml.jackson.databind.ObjectMapper().readTree(tokenJson);",
+            "  ivy.log.info(\"restored tokens!\"+in.token.toPrettyString());",
             "}"
           ]
         }
