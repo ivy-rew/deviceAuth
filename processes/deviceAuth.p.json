@@ -21,7 +21,7 @@
       "id" : "f1",
       "type" : "TaskEnd",
       "visual" : {
-        "at" : { "x" : 992, "y" : 200 }
+        "at" : { "x" : 1008, "y" : 200 }
       }
     }, {
       "id" : "f3",
@@ -50,7 +50,8 @@
         }
       },
       "visual" : {
-        "at" : { "x" : 240, "y" : 200 }
+        "at" : { "x" : 240, "y" : 200 },
+        "icon" : "res:/webContent/logos/microsoft.png"
       },
       "connect" : [
         { "id" : "f5", "to" : "f13" }
@@ -83,7 +84,8 @@
         }
       },
       "visual" : {
-        "at" : { "x" : 560, "y" : 280 }
+        "at" : { "x" : 560, "y" : 280 },
+        "icon" : "res:/webContent/logos/microsoft.png"
       },
       "boundaries" : [ {
           "id" : "f9",
@@ -94,10 +96,11 @@
             }
           },
           "visual" : {
-            "at" : { "x" : 592, "y" : 322 }
+            "at" : { "x" : 592, "y" : 322 },
+            "color" : "401"
           },
           "connect" : [
-            { "id" : "f4", "to" : "f13", "via" : [ { "x" : 392, "y" : 352 } ] }
+            { "id" : "f4", "to" : "f13", "via" : [ { "x" : 392, "y" : 320 } ] }
           ]
         } ],
       "connect" : [
@@ -144,7 +147,8 @@
         }
       },
       "visual" : {
-        "at" : { "x" : 720, "y" : 200 }
+        "at" : { "x" : 720, "y" : 200 },
+        "icon" : "res:/webContent/logos/microsoft.png"
       },
       "connect" : [
         { "id" : "f16", "to" : "f7" }
@@ -162,7 +166,7 @@
         }
       },
       "visual" : {
-        "at" : { "x" : 880, "y" : 200 }
+        "at" : { "x" : 888, "y" : 200 }
       },
       "connect" : [
         { "id" : "f10", "to" : "f1" }
@@ -197,10 +201,24 @@
         }
       },
       "visual" : {
-        "at" : { "x" : 720, "y" : 280 }
+        "at" : { "x" : 720, "y" : 280 },
+        "icon" : "res:/webContent/logos/axonivy.png"
       },
+      "boundaries" : [ {
+          "id" : "f24",
+          "type" : "ErrorBoundaryEvent",
+          "name" : "401",
+          "visual" : {
+            "at" : { "x" : 752, "y" : 320 },
+            "labelOffset" : { "x" : 13, "y" : 33 },
+            "color" : "401"
+          },
+          "connect" : [
+            { "id" : "f25", "to" : "f28" }
+          ]
+        } ],
       "connect" : [
-        { "id" : "f17", "to" : "f7" }
+        { "id" : "f17", "to" : "f20" }
       ]
     }, {
       "id" : "f18",
@@ -221,10 +239,129 @@
         }
       },
       "visual" : {
-        "at" : { "x" : 672, "y" : 376 }
+        "at" : { "x" : 720, "y" : 504 }
       },
       "connect" : [
-        { "id" : "f19", "to" : "f12" }
+        { "id" : "f19", "to" : "f22" }
       ]
-    } ]
+    }, {
+      "id" : "f20",
+      "type" : "Script",
+      "name" : [
+        "store token",
+        "for user"
+      ],
+      "config" : {
+        "output" : {
+          "code" : [
+            "import ch.ivyteam.ivy.security.IUser;",
+            "IUser user = ivy.security.users().find(in.user.get(\"name\").asText());",
+            "ivy.session.authenticateSessionUser(user,\"device-auth\");",
+            "",
+            "// store fore later re-usage > refresh",
+            "user.setProperty(\"graph.token\", in.token.toString());"
+          ]
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 888, "y" : 280 },
+        "color" : "storedToken"
+      },
+      "connect" : [
+        { "id" : "f21", "to" : "f7" }
+      ]
+    }, {
+      "id" : "f22",
+      "type" : "Script",
+      "name" : [
+        "load persistent",
+        "token"
+      ],
+      "config" : {
+        "output" : {
+          "code" : [
+            "String tokenJson = ivy.session.getSessionUser().getProperty(\"graph.token\");",
+            "if (!tokenJson.isEmpty()) {",
+            "  in.token = new com.fasterxml.jackson.databind.ObjectMapper().readTree(tokenJson);",
+            "}"
+          ]
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 720, "y" : 400 },
+        "color" : "storedToken"
+      },
+      "connect" : [
+        { "id" : "f23", "to" : "f12" }
+      ]
+    }, {
+      "id" : "f28",
+      "type" : "RestClientCall",
+      "name" : [
+        "refresh",
+        "token"
+      ],
+      "config" : {
+        "method" : "POST",
+        "target" : {
+          "clientId" : "f87198c1-98b9-4642-8b99-075889ed9f0a",
+          "path" : "/token"
+        },
+        "body" : {
+          "type" : "FORM",
+          "form" : {
+            "client_id" : [ "ivy.var.msauth_clientId" ],
+            "grant_type" : [ "\"refresh_token\"" ],
+            "refresh_token" : [ "in.token.get(\"refresh_token\")" ]
+          }
+        },
+        "response" : {
+          "entity" : {
+            "type" : "com.fasterxml.jackson.databind.JsonNode",
+            "map" : {
+              "out.token" : "result"
+            }
+          }
+        }
+      },
+      "visual" : {
+        "at" : { "x" : 560, "y" : 400 },
+        "icon" : "res:/webContent/logos/microsoft.png"
+      },
+      "connect" : [
+        { "id" : "f26", "to" : "f12" }
+      ]
+    }, {
+      "id" : "f27",
+      "type" : "ProcessAnnotation",
+      "name" : [
+        "access_tokens only live for 1 hour by default",
+        "... so frequent refresh flows are naturally"
+      ],
+      "visual" : {
+        "at" : { "x" : 512, "y" : 512 }
+      },
+      "connect" : [
+        { "id" : "f29", "to" : "f28" }
+      ]
+    }, {
+      "id" : "f30",
+      "type" : "ProcessAnnotation",
+      "name" : [
+        "tries to resume a previously",
+        "persisted graph auth "
+      ],
+      "visual" : {
+        "at" : { "x" : 888, "y" : 400 }
+      },
+      "connect" : [
+        { "id" : "f31", "to" : "f22" }
+      ]
+    } ],
+  "layout" : {
+    "colors" : {
+      "401" : "#e66100",
+      "storedToken" : "#62a0ea"
+    }
+  }
 }

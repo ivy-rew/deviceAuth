@@ -6,5 +6,6 @@ Variables:
   msauth:
     tenant:
     # [password]
+    clientId:
     # include 'offline_access' in order to get a 'refresh_token'
     scope: user.read openid profile offline_access
